@@ -169,15 +169,8 @@
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\protobuf\lpb.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpcap.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpcode.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpprint.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lptree.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lptypes.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpvm.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\sproto\msvcint.h" />
-    <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\sproto\sproto.h" />
     <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\unqlite\lunqlite.h" />
     <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\unqlite\unqlite.h" />
     <ClInclude Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\extra\crypto\base64\libbase64.h" />
@@ -211,62 +204,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpcap.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForcedIncludeFiles>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpcode.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForcedIncludeFiles>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpprint.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForcedIncludeFiles>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lptree.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForcedIncludeFiles>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\lpeg\lpvm.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForcedIncludeFiles>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\sproto\lsproto.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForcedIncludeFiles>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\sproto\sproto.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForcedIncludeFiles>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </ForcedIncludeFiles>
-    </ClCompile>
     <ClCompile Include="$(QUICK_V3_ROOT)\quick\lib\quick-src\lua_extensions\unqlite\lunqlite.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

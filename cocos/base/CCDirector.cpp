@@ -209,7 +209,7 @@ void Director::setDefaultValues(void)
     _displayStats = conf->getValue("cocos2d.x.display_fps", Value(false)).asBool();
 
     // GL projection
-    std::string projection = conf->getValue("cocos2d.x.gl.projection", Value("3d")).asString();
+    std::string projection = conf->getValue("cocos2d.x.gl.projection", Value("2d")).asString();
     if (projection == "3d")
         _projection = Projection::_3D;
     else if (projection == "2d")
@@ -1218,7 +1218,7 @@ void Director::createStatsLabel()
      So I added a new method called 'setIgnoreContentScaleFactor' for 'AtlasNode',
      this is not exposed to game developers, it's only used for displaying FPS now.
      */
-    float scaleFactor = 1 / CC_CONTENT_SCALE_FACTOR();
+    float scaleFactor = 1 / CC_CONTENT_SCALE_FACTOR() / 2;
 
     _FPSLabel = LabelAtlas::create();
     _FPSLabel->retain();
@@ -1241,7 +1241,7 @@ void Director::createStatsLabel()
 
     Texture2D::setDefaultAlphaPixelFormat(currentFormat);
 
-    const int height_spacing = 22 / CC_CONTENT_SCALE_FACTOR();
+    const int height_spacing = 22 / CC_CONTENT_SCALE_FACTOR() / 2;
     _drawnVerticesLabel->setPosition(Vec2(0, height_spacing*2) + CC_DIRECTOR_STATS_POSITION);
     _drawnBatchesLabel->setPosition(Vec2(0, height_spacing*1) + CC_DIRECTOR_STATS_POSITION);
     _FPSLabel->setPosition(Vec2(0, height_spacing*0)+CC_DIRECTOR_STATS_POSITION);
