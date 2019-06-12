@@ -142,8 +142,9 @@ void TMXLayer::draw(Renderer *renderer, const Mat4& transform, uint32_t flags)
     if( flags != 0 || _dirty || _quadsDirty)
     {
         Size s = Director::getInstance()->getVisibleSize();
-        auto rect = Rect(Camera::getVisitingCamera()->getPositionX() - s.width * 0.5f,
-                     Camera::getVisitingCamera()->getPositionY() - s.height * 0.5f,
+		const Vec2& anchor = getAnchorPoint();
+        auto rect = Rect(Camera::getVisitingCamera()->getPositionX() - s.width * anchor.x,
+                     Camera::getVisitingCamera()->getPositionY() - s.height * anchor.y,
                      s.width,
                      s.height);
         
@@ -432,8 +433,9 @@ void TMXLayer::updatePrimitives()
     }
 }
 
-void TMXLayer::updateColor(void)
+void TMXLayer::setOpacity(GLubyte opacity)
 {
+	Node::setOpacity(opacity);
     _quadsDirty = true;
 }
 

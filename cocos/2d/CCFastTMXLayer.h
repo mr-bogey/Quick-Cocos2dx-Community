@@ -271,7 +271,7 @@ public:
     void removeChild(Node* child, bool cleanup = true) override;
 
 protected:
-    void updateColor(void) override;
+	virtual void setOpacity(GLubyte opacity) override;
     
     bool initWithTilesetInfo(TMXTilesetInfo *tilesetInfo, TMXLayerInfo *layerInfo, TMXMapInfo *mapInfo);
     void updateTiles(const Rect& culledRect);
