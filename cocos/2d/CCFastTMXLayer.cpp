@@ -433,9 +433,8 @@ void TMXLayer::updatePrimitives()
     }
 }
 
-void TMXLayer::setOpacity(GLubyte opacity)
+void TMXLayer::updateColor(void)
 {
-	Node::setOpacity(opacity);
     _quadsDirty = true;
 }
 
