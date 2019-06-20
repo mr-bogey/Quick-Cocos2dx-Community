@@ -343,6 +343,16 @@ void Text::disableEffect() {
     _labelRenderer->disableEffect();
 }
 
+void Text::setGray()
+{
+	_labelRenderer->setGray();
+}
+
+void Text::setNormal()
+{
+	_labelRenderer->setNormal();
+}
+
 Widget* Text::createCloneInstance()
 {
     return Text::create();

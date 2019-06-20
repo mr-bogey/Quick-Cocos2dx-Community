@@ -270,6 +270,9 @@ public:
     virtual void setCameraMask(unsigned short mask, bool applyChildren = true) override;
     virtual void setGlobalZOrder(float globalZOrder) override;
 
+	void setGray();
+	void setNormal();
+
 CC_CONSTRUCTOR_ACCESS:
     /**
      * @js NA
@@ -402,6 +405,11 @@ protected:
     bool _insideBounds;                     /// whether or not the sprite was inside bounds the previous frame
 
     EventListenerCustom* _purgeTextureListener;
+
+	Color4B _oldTextColor;
+	Color4B _oldEffectColor;
+	Color3B _oldShadowColor;
+	bool _grayEnabled = false;
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(Label);
 

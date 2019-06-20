@@ -9177,6 +9177,98 @@ int lua_cocos2dx_ui_Text_setString(lua_State* tolua_S)
 
     return 0;
 }
+int lua_cocos2dx_ui_Text_setGray(lua_State* tolua_S)
+{
+	int argc = 0;
+	cocos2d::ui::Text* cobj = nullptr;
+	bool ok = true;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+	if (!tolua_isusertype(tolua_S, 1, "ccui.Text", 0, &tolua_err)) goto tolua_lerror;
+#endif
+
+	cobj = (cocos2d::ui::Text*)tolua_tousertype(tolua_S, 1, 0);
+
+#if COCOS2D_DEBUG >= 1
+	if (!cobj)
+	{
+		tolua_error(tolua_S, "invalid 'cobj' in function 'lua_cocos2dx_ui_Text_setGray'", nullptr);
+		return 0;
+	}
+#endif
+
+	argc = lua_gettop(tolua_S) - 1;
+	if (argc == 0)
+	{
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'lua_cocos2dx_ui_Text_setGray'", nullptr);
+			return 0;
+		}
+		cobj->setGray();
+		return 0;
+	}
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "ccui.Text:setGray", argc, 0);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_lerror:
+				tolua_error(tolua_S, "#ferror in function 'lua_cocos2dx_ui_Text_setGray'.", &tolua_err);
+#endif
+
+				return 0;
+}
+int lua_cocos2dx_ui_Text_setNormal(lua_State* tolua_S)
+{
+	int argc = 0;
+	cocos2d::ui::Text* cobj = nullptr;
+	bool ok = true;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+	if (!tolua_isusertype(tolua_S, 1, "ccui.Text", 0, &tolua_err)) goto tolua_lerror;
+#endif
+
+	cobj = (cocos2d::ui::Text*)tolua_tousertype(tolua_S, 1, 0);
+
+#if COCOS2D_DEBUG >= 1
+	if (!cobj)
+	{
+		tolua_error(tolua_S, "invalid 'cobj' in function 'lua_cocos2dx_ui_Text_setNormal'", nullptr);
+		return 0;
+	}
+#endif
+
+	argc = lua_gettop(tolua_S) - 1;
+	if (argc == 0)
+	{
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'lua_cocos2dx_ui_Text_setNormal'", nullptr);
+			return 0;
+		}
+		cobj->setNormal();
+		return 0;
+	}
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "ccui.Text:setNormal", argc, 0);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_lerror:
+				tolua_error(tolua_S, "#ferror in function 'lua_cocos2dx_ui_Text_setNormal'.", &tolua_err);
+#endif
+
+				return 0;
+}
 int lua_cocos2dx_ui_Text_isTouchScaleChangeEnabled(lua_State* tolua_S)
 {
     int argc = 0;
@@ -9967,6 +10059,8 @@ int lua_register_cocos2dx_ui_Text(lua_State* tolua_S)
         tolua_function(tolua_S,"setFontName",lua_cocos2dx_ui_Text_setFontName);
         tolua_function(tolua_S,"setTouchScaleChangeEnabled",lua_cocos2dx_ui_Text_setTouchScaleChangeEnabled);
         tolua_function(tolua_S,"setString",lua_cocos2dx_ui_Text_setString);
+		tolua_function(tolua_S,"setGray",lua_cocos2dx_ui_Text_setGray);
+		tolua_function(tolua_S,"setNormal",lua_cocos2dx_ui_Text_setNormal);
         tolua_function(tolua_S,"isTouchScaleChangeEnabled",lua_cocos2dx_ui_Text_isTouchScaleChangeEnabled);
         tolua_function(tolua_S,"getFontName",lua_cocos2dx_ui_Text_getFontName);
         tolua_function(tolua_S,"setTextAreaSize",lua_cocos2dx_ui_Text_setTextAreaSize);
