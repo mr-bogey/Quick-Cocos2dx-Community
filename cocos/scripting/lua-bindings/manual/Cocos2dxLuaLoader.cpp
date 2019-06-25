@@ -35,7 +35,12 @@ extern "C"
 {
     int cocos2dx_lua_loader(lua_State *L)
     {
-        static const std::string BYTECODE_FILE_EXT    = ".luac";
+        //static const std::string BYTECODE_FILE_EXT    = ".luac";
+#if defined(__aarch64__) || defined(__arm64__)
+		static const std::string BYTECODE_FILE_EXT = ".lua64";
+#else
+		static const std::string BYTECODE_FILE_EXT = ".lua32";
+#endif
         static const std::string NOT_BYTECODE_FILE_EXT = ".lua";
         
         std::string filename(luaL_checkstring(L, 1));

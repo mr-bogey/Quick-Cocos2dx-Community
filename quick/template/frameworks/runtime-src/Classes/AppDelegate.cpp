@@ -111,14 +111,12 @@ bool AppDelegate::applicationDidFinishLaunching()
     // resource decode, include game.zip
     //FileUtils::getInstance()->setFileDataDecoder(decoder);
 #if 0
-    LuaStack* stack = engine->getLuaStack();
     // use luajit bytecode package
 #if defined(__aarch64__) || defined(__arm64__)
-    stack->loadChunksFromZIP("res/game64.zip");
+	engine->executeScriptFile("src/main.lua64");
 #else
-    stack->loadChunksFromZIP("res/game32.zip");
+	engine->executeScriptFile("src/main.lua32");
 #endif
-    stack->executeString("require 'main'");
 #else // #if 0
     // use discrete files
     engine->executeScriptFile("src/main.lua");
