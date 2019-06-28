@@ -272,6 +272,7 @@ public:
 
 	void setGray();
 	void setNormal();
+	void setDisplayNode(Node* displayNode);
 
 CC_CONSTRUCTOR_ACCESS:
     /**
@@ -410,6 +411,7 @@ protected:
 	Color4B _oldEffectColor;
 	Color3B _oldShadowColor;
 	bool _grayEnabled = false;
+	Node* _displayNode;
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(Label);
 

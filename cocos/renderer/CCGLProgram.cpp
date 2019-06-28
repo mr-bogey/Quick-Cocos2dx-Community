@@ -403,7 +403,8 @@ bool GLProgram::compileShader(GLuint * shader, GLenum type, const GLchar* source
         glGetShaderiv(*shader, GL_SHADER_SOURCE_LENGTH, &length);
         GLchar* src = (GLchar *)malloc(sizeof(GLchar) * length);
         
-        glGetShaderSource(*shader, length, nullptr, src);
+        //glGetShaderSource(*shader, length, nullptr, src);
+		glGetShaderInfoLog(*shader, length, nullptr, src);
         CCLOG("cocos2d: ERROR: Failed to compile shader:\n%s", src);
         
         if (type == GL_VERTEX_SHADER)

@@ -191,6 +191,7 @@ public:
 
 	void setGray();
 	void setNormal();
+	void setDisplayNode(Node* displayNode);
     
 CC_CONSTRUCTOR_ACCESS:
     virtual bool init() override;

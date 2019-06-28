@@ -353,6 +353,11 @@ void Text::setNormal()
 	_labelRenderer->setNormal();
 }
 
+void Text::setDisplayNode(Node* displayNode)
+{
+	_labelRenderer->setDisplayNode(displayNode);
+}
+
 Widget* Text::createCloneInstance()
 {
     return Text::create();

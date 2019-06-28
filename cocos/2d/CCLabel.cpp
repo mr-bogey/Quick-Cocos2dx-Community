@@ -227,6 +227,7 @@ Label::Label(FontAtlas *atlas /* = nullptr */, TextHAlignment hAlignment /* = Te
 , _contentDirty(false)
 , _fontAtlas(atlas)
 , _textSprite(nullptr)
+, _displayNode(nullptr)
 , _compatibleMode(false)
 , _reusedLetter(nullptr)
 , _additionalKerning(0.0f)
@@ -1128,8 +1129,11 @@ void Label::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t pare
     director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
     director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
     
-
-    if (_textSprite)
+	if (_displayNode)
+	{
+		_displayNode->visit(renderer, _modelViewTransform, flags);
+	}
+    else if (_textSprite)
     {
         drawTextSprite(renderer, flags);
     }
@@ -1497,29 +1501,43 @@ void Label::setGray()
 
 void Label::setNormal()
 {
-	if (!_grayEnabled)
+	if (_grayEnabled)
 	{
-		return;
-	}
-	setTextColor(_oldTextColor);
-	if (_currLabelEffect != LabelEffect::NORMAL)
-	{
-		if (_currLabelEffect == LabelEffect::OUTLINE)
+		setTextColor(_oldTextColor);
+		if (_currLabelEffect != LabelEffect::NORMAL)
 		{
-			enableOutline(_oldEffectColor, _outlineSize);
+			if (_currLabelEffect == LabelEffect::OUTLINE)
+			{
+				enableOutline(_oldEffectColor, _outlineSize);
+			}
+			else if (_currLabelEffect == LabelEffect::GLOW)
+			{
+				enableGlow(_oldEffectColor);
+			}
 		}
-		else if (_currLabelEffect == LabelEffect::GLOW)
+		if (_shadowEnabled)
 		{
-			enableGlow(_oldEffectColor);
+			Color4B color(_oldShadowColor);
+			color.a = _shadowOpacity;
+			enableShadow(color, _shadowOffset, _shadowBlurRadius);
 		}
+		_grayEnabled = false;
 	}
-	if (_shadowEnabled)
+	if (_displayNode)
 	{
-		Color4B color(_oldShadowColor);
-		color.a = _shadowOpacity;
-		enableShadow(color, _shadowOffset, _shadowBlurRadius);
+		Node::removeChild(_displayNode, true);
+		_displayNode = nullptr;
 	}
-	_grayEnabled = false;
+}
+
+void Label::setDisplayNode(Node* displayNode)
+{
+	if (_displayNode)
+	{
+		Node::removeChild(_displayNode, true);
+	}
+	_displayNode = displayNode;
+	Node::addChild(_displayNode, 0, Node::INVALID_TAG);
 }
 
 NS_CC_END
