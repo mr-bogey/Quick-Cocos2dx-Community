@@ -1463,81 +1463,20 @@ void Label::setGlobalZOrder(float globalZOrder)
     }
 }
 
-void Label::setGray()
+void Label::setDisplayNode(Node* displayNode)
 {
-	if (_grayEnabled)
-	{
-		return;
-	}
-	float color = _textColor.r * 0.2126 + _textColor.g * 0.7152 + _textColor.b * 0.0722;
-	const Color4B textcolor(color, color, color, _textColor.a);
-	_oldTextColor = _textColor;
-	setTextColor(textcolor);
-
-	if (_currLabelEffect != LabelEffect::NORMAL)
-	{
-		color = _effectColor.r * 0.2126 + _effectColor.g * 0.7152 + _effectColor.b * 0.0722;
-		const Color4B effectcolor(color, color, color, _effectColor.a);
-		_oldEffectColor = _effectColor;
-		if (_currLabelEffect == LabelEffect::OUTLINE)
-		{
-			enableOutline(effectcolor, _outlineSize);
-		}
-		else if (_currLabelEffect == LabelEffect::GLOW)
-		{
-			enableGlow(effectcolor);
-		}
-	}
-	
-	if (_shadowEnabled)
-	{
-		color = _shadowColor.r * 0.2126 + _shadowColor.g * 0.7152 + _shadowColor.b * 0.0722;
-		const Color4B shadowcolor(color, color, color, _shadowOpacity);
-		_oldShadowColor = _shadowColor;
-		enableShadow(shadowcolor, _shadowOffset, _shadowBlurRadius);
-	}
-	_grayEnabled = true;
+	setDisplayNode();
+	_displayNode = displayNode;
+	Node::addChild(_displayNode, 0, Node::INVALID_TAG);
 }
 
-void Label::setNormal()
+void Label::setDisplayNode()
 {
-	if (_grayEnabled)
-	{
-		setTextColor(_oldTextColor);
-		if (_currLabelEffect != LabelEffect::NORMAL)
-		{
-			if (_currLabelEffect == LabelEffect::OUTLINE)
-			{
-				enableOutline(_oldEffectColor, _outlineSize);
-			}
-			else if (_currLabelEffect == LabelEffect::GLOW)
-			{
-				enableGlow(_oldEffectColor);
-			}
-		}
-		if (_shadowEnabled)
-		{
-			Color4B color(_oldShadowColor);
-			color.a = _shadowOpacity;
-			enableShadow(color, _shadowOffset, _shadowBlurRadius);
-		}
-		_grayEnabled = false;
-	}
 	if (_displayNode)
 	{
 		Node::removeChild(_displayNode, true);
 		_displayNode = nullptr;
 	}
-}
-
-void Label::setDisplayNode(Node* displayNode)
-{
-	if (_displayNode)
-	{
-		Node::removeChild(_displayNode, true);
-	}
-	_displayNode = displayNode;
-	Node::addChild(_displayNode, 0, Node::INVALID_TAG);
 }
 
 NS_CC_END

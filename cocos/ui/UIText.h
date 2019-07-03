@@ -188,10 +188,6 @@ public:
     
     /** disable shadow/outline/glow rendering */
     void disableEffect();
-
-	void setGray();
-	void setNormal();
-	void setDisplayNode(Node* displayNode);
     
 CC_CONSTRUCTOR_ACCESS:
     virtual bool init() override;

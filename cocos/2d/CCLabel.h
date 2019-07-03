@@ -270,9 +270,8 @@ public:
     virtual void setCameraMask(unsigned short mask, bool applyChildren = true) override;
     virtual void setGlobalZOrder(float globalZOrder) override;
 
-	void setGray();
-	void setNormal();
 	void setDisplayNode(Node* displayNode);
+	void setDisplayNode();
 
 CC_CONSTRUCTOR_ACCESS:
     /**
@@ -407,10 +406,6 @@ protected:
 
     EventListenerCustom* _purgeTextureListener;
 
-	Color4B _oldTextColor;
-	Color4B _oldEffectColor;
-	Color3B _oldShadowColor;
-	bool _grayEnabled = false;
 	Node* _displayNode;
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(Label);
