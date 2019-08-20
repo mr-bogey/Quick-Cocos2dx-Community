@@ -1278,5 +1278,39 @@ long FileUtils::getFileSize(const std::string &filepath)
     }
 }
 
+bool FileUtils::writeStringToFile(const std::string& dataStr, const std::string& fullPath)
+{
+	Data data;
+	data.fastSet((unsigned char*)dataStr.c_str(), dataStr.size());
+
+	bool rv = writeDataToFile(data, fullPath);
+
+	data.fastSet(nullptr, 0);
+	return rv;
+}
+
+bool FileUtils::writeDataToFile(const Data& data, const std::string& fullPath)
+{
+	size_t size = 0;
+	const char* mode = "wb";
+
+	CCASSERT(!fullPath.empty() && data.getSize() != 0, "Invalid parameters.");
+	do
+	{
+		// Read the file from hardware
+		FILE* fp = fopen(fullPath.c_str(), mode);
+		CC_BREAK_IF(!fp);
+		size = data.getSize();
+
+		fwrite(data.getBytes(), size, 1, fp);
+
+		fclose(fp);
+
+		return true;
+	} while (0);
+
+	return false;
+}
+
 NS_CC_END
 

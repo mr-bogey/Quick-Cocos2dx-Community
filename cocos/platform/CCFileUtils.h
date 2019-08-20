@@ -383,6 +383,10 @@ public:
      *  @return The file size.
      */
     virtual long getFileSize(const std::string &filepath);
+
+	bool writeStringToFile(const std::string& dataStr, const std::string& fullPath);
+
+	bool writeDataToFile(const Data& data, const std::string& fullPath);
     
     /**
      *  Set resource encrypt Sign and key.

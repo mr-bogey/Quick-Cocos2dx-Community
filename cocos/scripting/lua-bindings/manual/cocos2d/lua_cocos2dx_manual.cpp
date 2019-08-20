@@ -1845,6 +1845,35 @@ static int tolua_cocos2dx_DrawNode_setBlendFunc(lua_State* tolua_S)
     return tolua_cocos2dx_setBlendFunc<DrawNode>(tolua_S,"cc.DrawNode");
 }
 
+static int tolua_cocos2dx_FileUtils_writeStringToFile(lua_State* tolua_S)
+{
+	if (nullptr == tolua_S)
+		return 0;
+
+	int argc = 0;
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+	if (!tolua_isusertype(tolua_S, 1, "cc.FileUtils", 0, &tolua_err)) goto tolua_lerror;
+#endif
+
+	argc = lua_gettop(tolua_S) - 1;
+	if (argc == 2) {
+		const char* arg0 = lua_tostring(tolua_S, 2);
+		const char* arg1 = lua_tostring(tolua_S, 3);
+		bool ret = FileUtils::getInstance()->writeStringToFile(arg0, arg1);
+		tolua_pushboolean(tolua_S, (bool)ret);
+		return 1;
+	}
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.FileUtils:writeStringToFile", argc, 2);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+tolua_lerror:
+	tolua_error(tolua_S, "#ferror in function 'tolua_cocos2dx_FileUtils_writeStringToFile'.", &tolua_err);
+	return 0;
+#endif
+}
+
 static int tolua_cocos2dx_FileUtils_getStringFromFile(lua_State* tolua_S)
 {
     if (nullptr == tolua_S)
@@ -1871,7 +1900,7 @@ static int tolua_cocos2dx_FileUtils_getStringFromFile(lua_State* tolua_S)
 #if COCOS2D_DEBUG >= 1
 tolua_lerror:
     tolua_error(tolua_S,"#ferror in function 'tolua_cocos2dx_FileUtils_getStringFromFile'.",&tolua_err);
-    return 0;
+	return 0;
 #endif
 }
 
@@ -3224,6 +3253,11 @@ static void extendFileUtils(lua_State* tolua_S)
     lua_rawget(tolua_S, LUA_REGISTRYINDEX);
     if (lua_istable(tolua_S,-1))
     {
+		
+		lua_pushstring(tolua_S, "writeStringToFile");
+		lua_pushcfunction(tolua_S, tolua_cocos2dx_FileUtils_writeStringToFile);
+		lua_rawset(tolua_S, -3);
+
         lua_pushstring(tolua_S,"getStringFromFile");
         lua_pushcfunction(tolua_S,tolua_cocos2dx_FileUtils_getStringFromFile);
         lua_rawset(tolua_S,-3);
