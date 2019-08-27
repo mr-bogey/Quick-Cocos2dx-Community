@@ -25,7 +25,6 @@ extern "C" {
 
 	int luaopen_lprotobuf(lua_State* L) {
 		luaopen_pb(L);
-		lua_remove(L, -2);
 		return 1;
 	}
 

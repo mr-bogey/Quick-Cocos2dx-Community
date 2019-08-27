@@ -268,13 +268,13 @@ To enable set it to a value different than 0. Disabled by default.
 /** Support TIFF or not. If your application don't use TIFF format picture, you can undefine this macro to save package size.
  */
 #ifndef CC_USE_TIFF
-#define CC_USE_TIFF  1
+#define CC_USE_TIFF  0
 #endif // CC_USE_TIFF
 
 /** Support webp or not. If your application don't use webp format picture, you can undefine this macro to save package size.
  */
 #ifndef CC_USE_WEBP
-#define CC_USE_WEBP  1
+#define CC_USE_WEBP  0
 #endif // CC_USE_WEBP
 
 /** Use curl or not. If your application don't use curl, you can undefine this macro to save package size.
@@ -286,7 +286,7 @@ To enable set it to a value different than 0. Disabled by default.
 /** Use WebSocket or not. If your application don't use WebSocket, you can undefine this macro to save package size.
  */
 #ifndef CC_USE_WEBSOCKET
-#define CC_USE_WEBSOCKET  1
+#define CC_USE_WEBSOCKET  0
 #endif // CC_USE_WEBSOCKET
 
 /** Use cocos studio or not. If your application don't use ccs, you can undefine this macro to save package size.
@@ -298,7 +298,7 @@ To enable set it to a value different than 0. Disabled by default.
 /** Use spine or not. If your application don't use spine, you can undefine this macro to save package size.
  */
 #ifndef CC_USE_SPINE
-#define CC_USE_SPINE  1
+#define CC_USE_SPINE  0
 #endif // CC_USE_SPINE
 
 /** Use dragonBones or not. If your application don't use dragonBones, you can undefine this macro to save package size.
@@ -310,7 +310,7 @@ To enable set it to a value different than 0. Disabled by default.
 /** Use 3d sprites or not. If your application don't use 3d, you can undefine this macro to save package size.
  */
 #ifndef CC_USE_3D
-#define CC_USE_3D  1
+#define CC_USE_3D  0
 #endif // CC_USE_3D
 
 /** Enable Script binding */
