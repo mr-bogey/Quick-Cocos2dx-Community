@@ -30,6 +30,7 @@
 #include "base/ccUTF8.h"
 #include "platform/CCFileUtils.h"
 #include "2d/CCFont.h"
+#include "2d/CCDrawNode.h"
 #include "renderer/CCRenderer.h"
 #include "renderer/ccGLStateCache.h"
 #include "base/CCDirector.h"
@@ -248,6 +249,9 @@ Label::Label(FontAtlas *atlas /* = nullptr */, TextHAlignment hAlignment /* = Te
 , _uniformEffectColor(0)
 , _shadowDirty(false)
 , _insideBounds(true)
+, _boldEnabled(false)
+, _underlineNode(nullptr)
+, _strikethroughEnabled(false)
 {
     setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     reset();
@@ -316,6 +320,15 @@ void Label::reset()
     _shadowEnabled = false;
     _clipEnabled = false;
     _blendFuncDirty = false;
+
+	Node::setRotationSkewX(0);
+	if (_underlineNode)
+	{
+		Node::removeChild(_underlineNode);
+		_underlineNode = nullptr;
+	}
+	_boldEnabled = false;
+	_strikethroughEnabled = false;
 }
 
 void Label::updateShaderProgram()
@@ -790,6 +803,39 @@ void Label::enableShadow(const Color4B& shadowColor /* = Color4B::BLACK */,const
     }
 }
 
+void Label::enableItalics()
+{
+	Node::setRotationSkewX(12);
+}
+
+void Label::enableBold()
+{
+	if (!_boldEnabled)
+	{
+		enableShadow(_textColor, Size(0.9f, 0), 0);
+		_boldEnabled = true;
+	}
+}
+
+void Label::enableUnderline()
+{
+	if (!_underlineNode)
+	{
+		_underlineNode = DrawNode::create();
+		Node::addChild(_underlineNode, 1, Node::INVALID_TAG);
+		_contentDirty = true;
+	}
+}
+
+void Label::enableStrikethrough()
+{
+	if (!_strikethroughEnabled)
+	{
+		enableUnderline();
+		_strikethroughEnabled = true;
+	}
+}
+
 void Label::disableEffect()
 {
     if (_currLabelEffect == LabelEffect::OUTLINE)
@@ -801,11 +847,19 @@ void Label::disableEffect()
     updateShaderProgram();
     _contentDirty = true;
     _shadowEnabled = false;
+	_boldEnabled = false;
+	_strikethroughEnabled = false;
+	Node::setRotationSkewX(0);
     if (_shadowNode)
     {
         Node::removeChild(_shadowNode,true);
         _shadowNode = nullptr;
     }
+	if (_underlineNode)
+	{
+		Node::removeChild(_underlineNode, true);
+		_underlineNode = nullptr;
+	}
 }
 
 void Label::setFontScale(float fontScale)
@@ -1006,7 +1060,19 @@ void Label::updateContent()
 
         createSpriteWithFontDefinition();
     }
-    _contentDirty = false;
+
+
+	if (_underlineNode)
+	{
+		_underlineNode->clear();
+		const float charheight = _contentSize.height;
+		_underlineNode->setLineWidth(charheight / 18);
+		float y = 0;
+		if (_strikethroughEnabled)
+			y += charheight / 2;
+		_underlineNode->drawLine(Vec2(0, y), Vec2(_contentSize.width, y), Color4F(_textColor));
+	}
+	_contentDirty = false;
 }
 
 void Label::updateFont()
@@ -1065,6 +1131,10 @@ void Label::drawTextSprite(Renderer *renderer, uint32_t parentFlags)
     {
         _shadowNode->visit(renderer, _modelViewTransform, parentFlags);
     }
+	if (_underlineNode)
+	{
+		_underlineNode->visit(renderer, _modelViewTransform, parentFlags);
+	}
     _textSprite->visit(renderer, _modelViewTransform, parentFlags);
 }
 
@@ -1340,6 +1410,11 @@ void Label::updateDisplayedColor(const Color3B& parentColor)
     {
         _shadowNode->updateDisplayedColor(_displayedColor);
     }
+
+	if (_underlineNode)
+	{
+		_contentDirty = true;
+	}
     
     for(const auto &child: _children)
     {

@@ -30,6 +30,7 @@
 #include "2d/CCSpriteBatchNode.h"
 #include "renderer/CCCustomCommand.h"
 #include "2d/CCFontAtlas.h"
+#include "2d/CCDrawNode.h"
 
 NS_CC_BEGIN
 
@@ -58,14 +59,24 @@ typedef struct _ttfConfig
     bool distanceFieldEnabled;
     int outlineSize;
 
+	bool italics;
+	bool bold;
+	bool underline;
+	bool strikethrough;
+
     _ttfConfig(const char* filePath = "",int size = 12, const GlyphCollection& glyphCollection = GlyphCollection::DYNAMIC,
-        const char *customGlyphCollection = nullptr,bool useDistanceField = false,int outline = 0)
+        const char *customGlyphCollection = nullptr,bool useDistanceField = false,int outline = 0,
+		bool useItalics = false, bool useBold = false, bool useUnderline = false, bool useStrikethrough = false)
         :fontFilePath(filePath)
         ,fontSize(size)
         ,glyphs(glyphCollection)
         ,customGlyphs(customGlyphCollection)
         ,distanceFieldEnabled(useDistanceField)
         ,outlineSize(outline)
+		, italics(useItalics)
+		, bold(useBold)
+		, underline(useUnderline)
+		, strikethrough(useStrikethrough)
     {
         if(outline > 0)
         {
@@ -156,6 +167,14 @@ public:
      * @todo support blur for shadow effect
      */
     virtual void enableShadow(const Color4B& shadowColor = Color4B::BLACK,const Size &offset = Size(2,-2), int blurRadius = 0);
+
+	virtual void enableItalics();
+
+	virtual void enableBold();
+
+	virtual void enableUnderline();
+
+	virtual void enableStrikethrough();
 
     /** only support for TTF */
     virtual void enableOutline(const Color4B& outlineColor,int outlineSize = -1);
@@ -407,6 +426,9 @@ protected:
     EventListenerCustom* _purgeTextureListener;
 
 	Node* _displayNode;
+	bool _boldEnabled;
+	DrawNode* _underlineNode;
+	bool _strikethroughEnabled;
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(Label);
 

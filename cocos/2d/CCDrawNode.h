@@ -45,13 +45,15 @@ NS_CC_BEGIN
  @since v2.1
  */
 
+static const int DEFAULT_LINE_WIDTH = 2;
+
 class PointArray;
 
 class CC_DLL DrawNode : public Node
 {
 public:
     /** creates and initialize a DrawNode node */
-    static DrawNode* create();
+    static DrawNode* create(GLfloat defaultLineWidth = DEFAULT_LINE_WIDTH);
 
     void drawPoint(const Vec2& point, const float pointSize, const Color4F &color);
     
@@ -126,9 +128,11 @@ public:
     
     // Overrides
     virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
+
+	void setLineWidth(GLfloat lineWidth);
     
 CC_CONSTRUCTOR_ACCESS:
-    DrawNode();
+    DrawNode(GLfloat lineWidth);
     virtual ~DrawNode();
     virtual bool init() override;
 
@@ -166,6 +170,9 @@ protected:
     bool        _dirty;
     bool        _dirtyGLPoint;
     bool        _dirtyGLLine;
+
+	GLfloat		_lineWidth;
+	GLfloat		_defaultLineWidth;
 
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(DrawNode);

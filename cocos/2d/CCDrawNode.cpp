@@ -103,7 +103,7 @@ static inline Tex2F __t(const Vec2 &v)
 
 // implementation of DrawNode
 
-DrawNode::DrawNode()
+DrawNode::DrawNode(GLfloat lineWidth)
 : _vao(0)
 , _vbo(0)
 , _vaoGLPoint(0)
@@ -124,6 +124,8 @@ DrawNode::DrawNode()
 , _dirty(false)
 , _dirtyGLPoint(false)
 , _dirtyGLLine(false)
+, _lineWidth(lineWidth)
+, _defaultLineWidth(lineWidth)
 {
     _blendFunc = BlendFunc::ALPHA_PREMULTIPLIED;
 }
@@ -154,9 +156,9 @@ DrawNode::~DrawNode()
     }
 }
 
-DrawNode* DrawNode::create()
+DrawNode* DrawNode::create(GLfloat defaultLineWidth)
 {
-    DrawNode* ret = new (std::nothrow) DrawNode();
+    DrawNode* ret = new (std::nothrow) DrawNode(defaultLineWidth);
     if (ret && ret->init())
     {
         ret->autorelease();
@@ -381,7 +383,7 @@ void DrawNode::onDrawGLLine(const Mat4 &transform, uint32_t flags)
         // texcood
         glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid *)offsetof(V2F_C4B_T2F, texCoords));
     }
-    glLineWidth(2);
+    glLineWidth(_lineWidth);
     glDrawArrays(GL_LINES, 0, _bufferCountGLLine);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
@@ -908,6 +910,7 @@ void DrawNode::clear()
     _dirtyGLLine = true;
     _bufferCountGLPoint = 0;
     _dirtyGLPoint = true;
+	_lineWidth = _defaultLineWidth;
 }
 
 const BlendFunc& DrawNode::getBlendFunc() const
@@ -918,6 +921,11 @@ const BlendFunc& DrawNode::getBlendFunc() const
 void DrawNode::setBlendFunc(const BlendFunc &blendFunc)
 {
     _blendFunc = blendFunc;
+}
+
+void DrawNode::setLineWidth(GLfloat lineWidth)
+{
+	_lineWidth = lineWidth;
 }
 
 NS_CC_END
