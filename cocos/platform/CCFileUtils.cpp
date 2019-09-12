@@ -1144,6 +1144,55 @@ static int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, str
 }
 #endif
 
+std::wstring StringUtf8ToWideChar(const std::string& strUtf8)
+{
+	std::wstring ret;
+	if (!strUtf8.empty())
+	{
+		int nNum = MultiByteToWideChar(CP_UTF8, 0, strUtf8.c_str(), -1, nullptr, 0);
+		if (nNum)
+		{
+			WCHAR* wideCharString = new WCHAR[nNum + 1];
+			wideCharString[0] = 0;
+
+			nNum = MultiByteToWideChar(CP_UTF8, 0, strUtf8.c_str(), -1, wideCharString, nNum + 1);
+
+			ret = wideCharString;
+			delete[] wideCharString;
+		}
+		else
+		{
+			CCLOG("Wrong convert to WideChar code:0x%x", GetLastError());
+		}
+	}
+	return ret;
+}
+
+std::string StringWideCharToUtf8(const std::wstring& strWideChar)
+{
+	std::string ret;
+	if (!strWideChar.empty())
+	{
+		int nNum = WideCharToMultiByte(CP_UTF8, 0, strWideChar.c_str(), -1, nullptr, 0, nullptr, FALSE);
+		if (nNum)
+		{
+			char* utf8String = new char[nNum + 1];
+			utf8String[0] = 0;
+
+			nNum = WideCharToMultiByte(CP_UTF8, 0, strWideChar.c_str(), -1, utf8String, nNum + 1, nullptr, FALSE);
+
+			ret = utf8String;
+			delete[] utf8String;
+		}
+		else
+		{
+			CCLOG("Wrong convert to Utf8 code:0x%x", GetLastError());
+		}
+	}
+
+	return ret;
+}
+
 bool FileUtils::removeDirectory(const std::string& path)
 {
     if (path.size() > 0 && path[path.size() - 1] != '/')
@@ -1154,22 +1203,41 @@ bool FileUtils::removeDirectory(const std::string& path)
     
     // Remove downloaded files
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-    std::string command = "cmd /c rd /s /q ";
-    std::string win32path = path;
-    int len = win32path.length();
-    for (int i = 0; i < len; ++i)
-    {
-        if (win32path[i] == '/')
-        {
-            win32path[i] = '\\';
-        }
-    }
-    command += win32path;
-    
-    if (WinExec(command.c_str(), SW_HIDE) > 31)
-        return true;
-    else
-        return false;
+	std::wstring wpath = StringUtf8ToWideChar(path);
+	std::wstring files = wpath + L"*.*";
+	WIN32_FIND_DATA wfd;
+	HANDLE  search = FindFirstFileEx(files.c_str(), FindExInfoStandard, &wfd, FindExSearchNameMatch, NULL, 0);
+	bool ret = true;
+	if (search != INVALID_HANDLE_VALUE)
+	{
+		BOOL find = true;
+		while (find)
+		{
+			// Need check string . and .. for delete folders and files begin name.
+			std::wstring fileName = wfd.cFileName;
+			if (fileName != L"." && fileName != L"..")
+			{
+				std::wstring temp = wpath + wfd.cFileName;
+				if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					temp += '/';
+					ret = ret && this->removeDirectory(StringWideCharToUtf8(temp));
+				}
+				else
+				{
+					SetFileAttributes(temp.c_str(), FILE_ATTRIBUTE_NORMAL);
+					ret = ret && DeleteFile(temp.c_str());
+				}
+			}
+			find = FindNextFile(search, &wfd);
+		}
+		FindClose(search);
+	}
+	if (ret && RemoveDirectory(wpath.c_str()))
+	{
+		return true;
+	}
+	return false;
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     if (nftw(path.c_str(),unlink_cb, 64, FTW_DEPTH | FTW_PHYS))
         return false;
@@ -1190,22 +1258,18 @@ bool FileUtils::removeFile(const std::string &path)
 {
     // Remove downloaded file
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-	std::string command = "cmd /c del /q ";
-	std::string win32path = path;
-	int len = win32path.length();
-	for (int i = 0; i < len; ++i)
-	{
-		if (win32path[i] == '/')
-		{
-			win32path[i] = '\\';
-		}
-	}
-	command += win32path;
+	std::regex pat("\\/");
+	std::string win32path = std::regex_replace(path, pat, "\\");
 
-	if (WinExec(command.c_str(), SW_HIDE) > 31)
+	if (DeleteFileA(win32path.c_str()))
+	{
 		return true;
+	}
 	else
+	{
+		CCLOGERROR("Fail remove file %s !Error code is 0x%x", path.c_str(), GetLastError());
 		return false;
+	}
 #else
     if (remove(path.c_str())) {
         return false;
@@ -1227,17 +1291,23 @@ bool FileUtils::renameFile(const std::string &path, const std::string &oldname, 
     std::string _old = std::regex_replace(oldPath, pat, "\\");
     std::string _new = std::regex_replace(newPath, pat, "\\");
 
-    if(FileUtils::getInstance()->isFileExist(_new))
-    {
-        DeleteFileA(_new.c_str());
-    }
+	if (FileUtils::getInstance()->isFileExist(_new))
+	{
+		if (!DeleteFileA(_new.c_str()))
+		{
+			CCLOGERROR("Fail to delete file %s !Error code is 0x%x", newPath.c_str(), GetLastError());
+		}
+	}
 
-    MoveFileA(_old.c_str(), _new.c_str());
-
-    if (0 == GetLastError())
-        return true;
-    else
-        return false;
+	if (MoveFileA(_old.c_str(), _new.c_str()))
+	{
+		return true;
+	}
+	else
+	{
+		CCLOGERROR("Fail to rename file %s to %s !Error code is 0x%x", oldPath.c_str(), newPath.c_str(), GetLastError());
+		return false;
+	}
 #else
     int errorCode = rename(oldPath.c_str(), newPath.c_str());
 
