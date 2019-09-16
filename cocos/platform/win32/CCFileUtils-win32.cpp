@@ -117,6 +117,21 @@ bool FileUtilsWin32::isFileExistInternal(const std::string& strFilePath) const
     {
         return false;   //  not a file
     }
+    else
+    {
+        WIN32_FIND_DATAA ffd;
+        HANDLE hFind = FindFirstFileA(strPath.c_str(), &ffd);
+		if (hFind != INVALID_HANDLE_VALUE) {
+			FindClose(hFind);
+		}
+        std::string filename(ffd.cFileName);
+        size_t pos = strFilePath.find(filename);
+        if (pos + filename.length() != strFilePath.length())
+        {
+            std::string realFile = strPath.substr(0, strPath.length() - filename.length()) + filename;
+            CCLOG("WARNING: File case-sensitive.\n%s\n%s\n\n", strPath.c_str(), realFile.c_str());
+        }
+    }
     return true;
 }
 
@@ -149,8 +164,8 @@ Data FileUtilsWin32::getData(const std::string& filename, bool forString)
         WCHAR wszBuf[CC_MAX_PATH] = {0};
         MultiByteToWideChar(CP_UTF8, 0, fullPath.c_str(), -1, wszBuf, sizeof(wszBuf)/sizeof(wszBuf[0]));
 
-        HANDLE fileHandle = ::CreateFileW(wszBuf, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, NULL, nullptr);
-		CC_BREAK_IF(fileHandle == INVALID_HANDLE_VALUE);
+        HANDLE fileHandle = ::CreateFileW(wszBuf, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, nullptr);
+        CC_BREAK_IF(fileHandle == INVALID_HANDLE_VALUE);
         
         size = ::GetFileSize(fileHandle, nullptr);
 
