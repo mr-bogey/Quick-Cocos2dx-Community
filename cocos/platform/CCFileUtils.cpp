@@ -1144,6 +1144,7 @@ static int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, str
 }
 #endif
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 std::wstring StringUtf8ToWideChar(const std::string& strUtf8)
 {
 	std::wstring ret;
@@ -1192,6 +1193,7 @@ std::string StringWideCharToUtf8(const std::wstring& strWideChar)
 
 	return ret;
 }
+#endif
 
 bool FileUtils::removeDirectory(const std::string& path)
 {
