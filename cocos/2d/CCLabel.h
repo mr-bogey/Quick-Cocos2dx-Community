@@ -47,7 +47,12 @@ enum class LabelEffect {
     NORMAL,
     OUTLINE,
     SHADOW,
-    GLOW
+    GLOW,
+	ITALICS,
+	BOLD,
+	UNDERLINE,
+	STRIKETHROUGH,
+	ALL
 };
 
 typedef struct _ttfConfig
@@ -73,10 +78,10 @@ typedef struct _ttfConfig
         ,customGlyphs(customGlyphCollection)
         ,distanceFieldEnabled(useDistanceField)
         ,outlineSize(outline)
-		, italics(useItalics)
-		, bold(useBold)
-		, underline(useUnderline)
-		, strikethrough(useStrikethrough)
+		,italics(useItalics)
+		,bold(useBold)
+		,underline(useUnderline)
+		,strikethrough(useStrikethrough)
     {
         if(outline > 0)
         {
@@ -184,6 +189,7 @@ public:
 
     /** disable shadow/outline/glow rendering */
     virtual void disableEffect();
+	virtual void disableEffect(LabelEffect effect);
 
     void setAlignment(TextHAlignment hAlignment) { setAlignment(hAlignment,_vAlignment);}
     TextHAlignment getTextAlignment() const { return _hAlignment;}

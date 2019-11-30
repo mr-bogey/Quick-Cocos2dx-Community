@@ -435,15 +435,23 @@ bool Label::setTTFConfig(const TTFConfig& ttfConfig)
         _currLabelEffect = LabelEffect::OUTLINE;
         updateShaderProgram();
     }
-    else 
-    {
-        _currLabelEffect = LabelEffect::NORMAL;
-        updateShaderProgram();
-        if(ttfConfig.distanceFieldEnabled)
-        {
-            this->setFontScale(1.0f * ttfConfig.fontSize / DistanceFieldFontSize);
-        }
-    }
+	else
+	{
+		_currLabelEffect = LabelEffect::NORMAL;
+		updateShaderProgram();
+		if (ttfConfig.distanceFieldEnabled)
+		{
+			this->setFontScale(1.0f * ttfConfig.fontSize / DistanceFieldFontSize);
+		}
+	}
+	if (_fontConfig.italics)
+		this->enableItalics();
+	if (_fontConfig.bold)
+		this->enableBold();
+	if (_fontConfig.underline)
+		this->enableUnderline();
+	if (_fontConfig.strikethrough)
+		this->enableStrikethrough();
 
     return true;
 }
@@ -838,27 +846,71 @@ void Label::enableStrikethrough()
 
 void Label::disableEffect()
 {
-    if (_currLabelEffect == LabelEffect::OUTLINE)
-    {
-        _fontConfig.outlineSize = 0;
-        setTTFConfig(_fontConfig);
-    }
-    _currLabelEffect = LabelEffect::NORMAL;
-    updateShaderProgram();
-    _contentDirty = true;
-    _shadowEnabled = false;
-	_boldEnabled = false;
-	_strikethroughEnabled = false;
-	Node::setRotationSkewX(0);
-    if (_shadowNode)
-    {
-        Node::removeChild(_shadowNode,true);
-        _shadowNode = nullptr;
-    }
-	if (_underlineNode)
+	disableEffect(LabelEffect::ALL);
+}
+
+void Label::disableEffect(LabelEffect effect)
+{
+	switch (effect)
 	{
-		Node::removeChild(_underlineNode, true);
-		_underlineNode = nullptr;
+	case cocos2d::LabelEffect::NORMAL:
+		break;
+	case cocos2d::LabelEffect::OUTLINE:
+		if (_currLabelEffect == LabelEffect::OUTLINE)
+		{
+			_fontConfig.outlineSize = 0;
+			setTTFConfig(_fontConfig);
+			_currLabelEffect = LabelEffect::NORMAL;
+			_contentDirty = true;
+			updateShaderProgram();
+		}
+		break;
+	case cocos2d::LabelEffect::SHADOW:
+		if (_shadowEnabled)
+		{
+			_shadowEnabled = false;
+			Node::removeChild(_shadowNode, true);
+			_shadowNode = nullptr;
+		}
+		break;
+	case cocos2d::LabelEffect::GLOW:
+		if (_currLabelEffect == LabelEffect::GLOW)
+		{
+			_currLabelEffect = LabelEffect::NORMAL;
+			updateShaderProgram();
+		}
+		break;
+	case cocos2d::LabelEffect::ITALICS:
+		setRotationSkewX(0);
+		break;
+	case cocos2d::LabelEffect::BOLD:
+		if (_boldEnabled) {
+			_boldEnabled = false;
+			disableEffect(LabelEffect::SHADOW);
+		}
+		break;
+	case cocos2d::LabelEffect::UNDERLINE:
+		if (_underlineNode)
+		{
+			Node::removeChild(_underlineNode, true);
+			_underlineNode = nullptr;
+		}
+		break;
+	case cocos2d::LabelEffect::STRIKETHROUGH:
+		_strikethroughEnabled = false;
+		disableEffect(LabelEffect::UNDERLINE);
+		break;
+	case cocos2d::LabelEffect::ALL:
+		disableEffect(LabelEffect::SHADOW);
+		disableEffect(LabelEffect::GLOW);
+		disableEffect(LabelEffect::OUTLINE);
+		disableEffect(LabelEffect::ITALICS);
+		disableEffect(LabelEffect::BOLD);
+		disableEffect(LabelEffect::UNDERLINE);
+		disableEffect(LabelEffect::STRIKETHROUGH);
+		break;
+	default:
+		break;
 	}
 }
 
