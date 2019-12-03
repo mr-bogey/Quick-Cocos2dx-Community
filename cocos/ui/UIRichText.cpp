@@ -42,10 +42,10 @@ bool RichElement::init(int tag, const Color3B &color, GLubyte opacity)
     return true;
 }
     
-RichElementText* RichElementText::create(int tag, const Color3B &color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize)
+RichElementText* RichElementText::create(int tag, const Color3B &color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize, uint32_t flags)
 {
     RichElementText* element = new (std::nothrow) RichElementText();
-    if (element && element->init(tag, color, opacity, text, fontName, fontSize))
+    if (element && element->init(tag, color, opacity, text, fontName, fontSize, flags))
     {
         element->autorelease();
         return element;
@@ -54,22 +54,23 @@ RichElementText* RichElementText::create(int tag, const Color3B &color, GLubyte 
     return nullptr;
 }
     
-bool RichElementText::init(int tag, const Color3B &color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize)
+bool RichElementText::init(int tag, const Color3B &color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize, uint32_t flags)
 {
     if (RichElement::init(tag, color, opacity))
     {
         _text = text;
         _fontName = fontName;
         _fontSize = fontSize;
+		_flags = flags;
         return true;
     }
     return false;
 }
 
-RichElementImage* RichElementImage::create(int tag, const Color3B &color, GLubyte opacity, const std::string& filePath)
+RichElementImage* RichElementImage::create(int tag, const Color3B &color, GLubyte opacity, const std::string& filePath, const Size& size, const int textureType)
 {
     RichElementImage* element = new (std::nothrow) RichElementImage();
-    if (element && element->init(tag, color, opacity, filePath))
+    if (element && element->init(tag, color, opacity, filePath, size, textureType))
     {
         element->autorelease();
         return element;
@@ -77,12 +78,14 @@ RichElementImage* RichElementImage::create(int tag, const Color3B &color, GLubyt
     CC_SAFE_DELETE(element);
     return nullptr;
 }
-    
-bool RichElementImage::init(int tag, const Color3B &color, GLubyte opacity, const std::string& filePath)
+
+bool RichElementImage::init(int tag, const Color3B &color, GLubyte opacity, const std::string& filePath, const Size& size, const int textureType)
 {
     if (RichElement::init(tag, color, opacity))
     {
         _filePath = filePath;
+		_size = size;
+		_textureType = textureType;
         return true;
     }
     return false;
@@ -199,20 +202,39 @@ void RichText::formatText()
                     case RichElement::Type::TEXT:
                     {
                         RichElementText* elmtText = static_cast<RichElementText*>(element);
+						Label* label;
                         if (FileUtils::getInstance()->isFileExist(elmtText->_fontName))
                         {
-                            elementRenderer = Label::createWithTTF(elmtText->_text.c_str(), elmtText->_fontName, elmtText->_fontSize);
+							label = Label::createWithTTF(elmtText->_text.c_str(), elmtText->_fontName, elmtText->_fontSize);
                         }
                         else
                         {
-                            elementRenderer = Label::createWithSystemFont(elmtText->_text.c_str(), elmtText->_fontName, elmtText->_fontSize);
+							label = Label::createWithSystemFont(elmtText->_text.c_str(), elmtText->_fontName, elmtText->_fontSize);
                         }
+						if (elmtText->_flags & RichElementText::ITALICS)
+							label->enableItalics();
+						if (elmtText->_flags & RichElementText::BOLD)
+							label->enableBold();
+						if (elmtText->_flags & RichElementText::UNDERLINE)
+							label->enableUnderline();
+						if (elmtText->_flags & RichElementText::STRIKETHROUGH)
+							label->enableStrikethrough();
+						elementRenderer = label;
                         break;
                     }
                     case RichElement::Type::IMAGE:
                     {
                         RichElementImage* elmtImage = static_cast<RichElementImage*>(element);
-                        elementRenderer = Sprite::create(elmtImage->_filePath.c_str());
+						if (elmtImage->_textureType == (int)Widget::TextureResType::LOCAL)
+							elementRenderer = Sprite::create(elmtImage->_filePath.c_str());
+						else
+							elementRenderer = Sprite::createWithSpriteFrameName(elmtImage->_filePath.c_str());
+						if (elmtImage->_size.width != 0 && elmtImage->_size.height != 0)
+						{
+							auto currentSize = elementRenderer->getContentSize();
+							elementRenderer->setScale(elmtImage->_size.width / currentSize.width, elmtImage->_size.height / currentSize.height);
+							elementRenderer->setContentSize(elmtImage->_size);
+						}
                         break;
                     }
                     case RichElement::Type::CUSTOM:
@@ -250,13 +272,13 @@ void RichText::formatText()
                     case RichElement::Type::TEXT:
                     {
                         RichElementText* elmtText = static_cast<RichElementText*>(element);
-                        handleTextRenderer(elmtText->_text.c_str(), elmtText->_fontName.c_str(), elmtText->_fontSize, elmtText->_color, elmtText->_opacity);
+                        handleTextRenderer(elmtText->_text.c_str(), elmtText->_fontName.c_str(), elmtText->_fontSize, elmtText->_color, elmtText->_opacity, elmtText->_flags);
                         break;
                     }
                     case RichElement::Type::IMAGE:
                     {
                         RichElementImage* elmtImage = static_cast<RichElementImage*>(element);
-                        handleImageRenderer(elmtImage->_filePath.c_str(), elmtImage->_color, elmtImage->_opacity);
+                        handleImageRenderer(elmtImage->_filePath.c_str(), elmtImage->_color, elmtImage->_opacity, elmtImage->_size, elmtImage->_textureType);
                         break;
                     }
                     case RichElement::Type::CUSTOM:
@@ -280,7 +302,7 @@ void RichText::formatText()
     }
 }
     
-void RichText::handleTextRenderer(const std::string& text, const std::string& fontName, float fontSize, const Color3B &color, GLubyte opacity)
+void RichText::handleTextRenderer(const std::string& text, const std::string& fontName, float fontSize, const Color3B &color, GLubyte opacity, uint32_t flags)
 {
     auto fileExist = FileUtils::getInstance()->isFileExist(fontName);
     Label* textRenderer = nullptr;
@@ -315,6 +337,14 @@ void RichText::handleTextRenderer(const std::string& text, const std::string& fo
             }
             if (leftRenderer)
             {
+				if (flags & RichElementText::ITALICS)
+					leftRenderer->enableItalics();
+				if (flags & RichElementText::BOLD)
+					leftRenderer->enableBold();
+				if (flags & RichElementText::UNDERLINE)
+					leftRenderer->enableUnderline();
+				if (flags & RichElementText::STRIKETHROUGH)
+					leftRenderer->enableStrikethrough();
                 leftRenderer->setColor(color);
                 leftRenderer->setOpacity(opacity);
                 pushToContainer(leftRenderer);
@@ -322,20 +352,41 @@ void RichText::handleTextRenderer(const std::string& text, const std::string& fo
         }
 
         addNewLine();
-        handleTextRenderer(cutWords.c_str(), fontName, fontSize, color, opacity);
+        handleTextRenderer(cutWords.c_str(), fontName, fontSize, color, opacity, flags);
     }
     else
     {
+		if (flags & RichElementText::ITALICS)
+			textRenderer->enableItalics();
+		if (flags & RichElementText::BOLD)
+			textRenderer->enableBold();
+		if (flags & RichElementText::UNDERLINE)
+			textRenderer->enableUnderline();
+		if (flags & RichElementText::STRIKETHROUGH)
+			textRenderer->enableStrikethrough();
         textRenderer->setColor(color);
         textRenderer->setOpacity(opacity);
         pushToContainer(textRenderer);
     }
 }
     
-void RichText::handleImageRenderer(const std::string& filePath, const Color3B &color, GLubyte opacity)
+void RichText::handleImageRenderer(const std::string& filePath, const Color3B &/*color*/, GLubyte /*opacity*/, Size &size, int textureType)
 {
-    Sprite* imageRenderer = Sprite::create(filePath);
-    handleCustomRenderer(imageRenderer);
+	Sprite* imageRenderer = nullptr;
+	if (textureType == (int)Widget::TextureResType::LOCAL)
+		imageRenderer = Sprite::create(filePath.c_str());
+	else
+		imageRenderer = Sprite::createWithSpriteFrameName(filePath.c_str());
+	if (imageRenderer)
+	{
+		if (size.width != 0 && size.height != 0)
+		{
+			auto currentSize = imageRenderer->getContentSize();
+			imageRenderer->setScale(size.width / currentSize.width, size.height / currentSize.height);
+			imageRenderer->setContentSize(size);
+		}
+		handleCustomRenderer(imageRenderer);
+	}
 }
     
 void RichText::handleCustomRenderer(cocos2d::Node *renderer)
