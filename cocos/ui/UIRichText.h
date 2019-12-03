@@ -58,14 +58,21 @@ protected:
 class CC_GUI_DLL RichElementText : public RichElement
 {
 public:
+	enum {
+		ITALICS = 1 << 0,
+		BOLD = 1 << 1,
+		UNDERLINE = 1 << 2,
+		STRIKETHROUGH = 1 << 3
+	};
     RichElementText(){_type = Type::TEXT;};
     virtual ~RichElementText(){};
-    bool init(int tag, const Color3B& color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize);
-    static RichElementText* create(int tag, const Color3B& color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize);
+    bool init(int tag, const Color3B& color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize, uint32_t flags = 0);
+    static RichElementText* create(int tag, const Color3B& color, GLubyte opacity, const std::string& text, const std::string& fontName, float fontSize, uint32_t flags = 0);
 protected:
     std::string _text;
     std::string _fontName;
     float _fontSize;
+	uint32_t _flags;
     friend class RichText;
     
 };
@@ -75,12 +82,13 @@ class CC_GUI_DLL RichElementImage : public RichElement
 public:
     RichElementImage(){_type = Type::IMAGE;};
     virtual ~RichElementImage(){};
-    bool init(int tag, const Color3B& color, GLubyte opacity, const std::string& filePath);
-    static RichElementImage* create(int tag, const Color3B& color, GLubyte opacity, const std::string& filePath);
+    bool init(int tag, const Color3B& color, GLubyte opacity, const std::string& filePath, const Size& size = Size::ZERO, const int textureType = (int)Widget::TextureResType::LOCAL);
+    static RichElementImage* create(int tag, const Color3B& color, GLubyte opacity, const std::string& filePath, const Size& size = Size::ZERO, const int textureType = (int)Widget::TextureResType::LOCAL);
 protected:
     std::string _filePath;
     Rect _textureRect;
-    int _textureType;
+	int _textureType;
+	Size _size;
     friend class RichText;
 };
     
@@ -129,8 +137,8 @@ protected:
     virtual void adaptRenderers() override;
 
     void pushToContainer(Node* renderer);
-    void handleTextRenderer(const std::string& text, const std::string& fontName, float fontSize, const Color3B& color, GLubyte opacity);
-    void handleImageRenderer(const std::string& filePath, const Color3B& color, GLubyte opacity);
+    void handleTextRenderer(const std::string& text, const std::string& fontName, float fontSize, const Color3B& color, GLubyte opacity, uint32_t flags);
+    void handleImageRenderer(const std::string& filePath, const Color3B& color, GLubyte opacity, Size& size, int textureType);
     void handleCustomRenderer(Node* renderer);
     void formatRenderers();
     void addNewLine();

@@ -18573,6 +18573,31 @@ int lua_cocos2dx_ui_RichElementText_create(lua_State* tolua_S)
         object_to_luaval<cocos2d::ui::RichElementText>(tolua_S, "ccui.RichElementText",(cocos2d::ui::RichElementText*)ret);
         return 1;
     }
+	if (argc == 7)
+	{
+		int arg0;
+		cocos2d::Color3B arg1;
+		uint16_t arg2;
+		std::string arg3;
+		std::string arg4;
+		double arg5;
+		uint32_t arg6;
+		ok &= luaval_to_int32(tolua_S, 2, (int*)&arg0, "ccui.RichElementText:create");
+		ok &= luaval_to_color3b(tolua_S, 3, &arg1, "ccui.RichElementText:create");
+		ok &= luaval_to_uint16(tolua_S, 4, &arg2, "ccui.RichElementText:create");
+		ok &= luaval_to_std_string(tolua_S, 5, &arg3, "ccui.RichElementText:create");
+		ok &= luaval_to_std_string(tolua_S, 6, &arg4, "ccui.RichElementText:create");
+		ok &= luaval_to_number(tolua_S, 7, &arg5, "ccui.RichElementText:create");
+		ok &= luaval_to_uint32(tolua_S, 8, &arg6, "ccui.RichElementText:create");
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'lua_cocos2dx_ui_RichElementText_create'", nullptr);
+			return 0;
+		}
+		cocos2d::ui::RichElementText* ret = cocos2d::ui::RichElementText::create(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+		object_to_luaval<cocos2d::ui::RichElementText>(tolua_S, "ccui.RichElementText", (cocos2d::ui::RichElementText*)ret);
+		return 1;
+	}
     luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d\n ", "ccui.RichElementText:create",argc, 6);
     return 0;
 #if COCOS2D_DEBUG >= 1
@@ -18631,6 +18656,50 @@ int lua_cocos2dx_ui_RichElementImage_create(lua_State* tolua_S)
         object_to_luaval<cocos2d::ui::RichElementImage>(tolua_S, "ccui.RichElementImage",(cocos2d::ui::RichElementImage*)ret);
         return 1;
     }
+	if (argc == 5)
+	{
+		int arg0;
+		cocos2d::Color3B arg1;
+		uint16_t arg2;
+		std::string arg3;
+		cocos2d::Size arg4;
+		ok &= luaval_to_int32(tolua_S, 2, (int*)&arg0, "ccui.RichElementImage:create");
+		ok &= luaval_to_color3b(tolua_S, 3, &arg1, "ccui.RichElementImage:create");
+		ok &= luaval_to_uint16(tolua_S, 4, &arg2, "ccui.RichElementImage:create");
+		ok &= luaval_to_std_string(tolua_S, 5, &arg3, "ccui.RichElementImage:create");
+		ok &= luaval_to_size(tolua_S, 6, &arg4, "ccui.RichElementImage:create");
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'lua_cocos2dx_ui_RichElementImage_create'", nullptr);
+			return 0;
+		}
+		cocos2d::ui::RichElementImage* ret = cocos2d::ui::RichElementImage::create(arg0, arg1, arg2, arg3, arg4);
+		object_to_luaval<cocos2d::ui::RichElementImage>(tolua_S, "ccui.RichElementImage", (cocos2d::ui::RichElementImage*)ret);
+		return 1;
+	}
+	if (argc == 6)
+	{
+		int arg0;
+		cocos2d::Color3B arg1;
+		uint16_t arg2;
+		std::string arg3;
+		cocos2d::Size arg4;
+		int arg5;
+		ok &= luaval_to_int32(tolua_S, 2, (int*)&arg0, "ccui.RichElementImage:create");
+		ok &= luaval_to_color3b(tolua_S, 3, &arg1, "ccui.RichElementImage:create");
+		ok &= luaval_to_uint16(tolua_S, 4, &arg2, "ccui.RichElementImage:create");
+		ok &= luaval_to_std_string(tolua_S, 5, &arg3, "ccui.RichElementImage:create");
+		ok &= luaval_to_size(tolua_S, 6, &arg4, "ccui.RichElementImage:create");
+		ok &= luaval_to_int32(tolua_S, 7, (int *)&arg5, "ccui.RichElementImage:create");
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'lua_cocos2dx_ui_RichElementImage_create'", nullptr);
+			return 0;
+		}
+		cocos2d::ui::RichElementImage* ret = cocos2d::ui::RichElementImage::create(arg0, arg1, arg2, arg3, arg4, arg5);
+		object_to_luaval<cocos2d::ui::RichElementImage>(tolua_S, "ccui.RichElementImage", (cocos2d::ui::RichElementImage*)ret);
+		return 1;
+	}
     luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d\n ", "ccui.RichElementImage:create",argc, 4);
     return 0;
 #if COCOS2D_DEBUG >= 1
