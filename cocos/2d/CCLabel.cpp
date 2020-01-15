@@ -1118,11 +1118,11 @@ void Label::updateContent()
 	{
 		_underlineNode->clear();
 		const float charheight = _contentSize.height;
-		_underlineNode->setLineWidth(charheight / 18);
+		_underlineNode->setLineWidth(charheight / 16);
 		float y = 0;
 		if (_strikethroughEnabled)
 			y += charheight / 2;
-		_underlineNode->drawLine(Vec2(0, y), Vec2(_contentSize.width, y), Color4F(_textColor));
+		_underlineNode->drawLine(Vec2(0, y), Vec2(_contentSize.width, y), Color4F(_displayedColor));
 	}
 	_contentDirty = false;
 }
