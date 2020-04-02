@@ -23,8 +23,8 @@ extern "C" {
 // lunqlite3
 #include "unqlite/lunqlite.h"
 
-// protoc-gen-lua
-#include "protobuf/lpb.h"
+// protobuf
+    LUALIB_API int luaopen_pb(lua_State* L);
 
 static luaL_Reg luax_exts[] = {
     {"cjson", luaopen_cjson_safe},
@@ -38,7 +38,7 @@ static luaL_Reg luax_exts[] = {
 	{"unqlite", luaopen_lunqlite},
 #endif
 #if CC_USE_PROTOBUF
-    {"pb", luaopen_lprotobuf},
+    {"pb", luaopen_pb},
 #endif
     {NULL, NULL}
 };

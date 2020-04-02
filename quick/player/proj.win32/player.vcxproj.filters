@@ -207,9 +207,6 @@
     <ClInclude Include="..\..\lib\quick-src\lua_extensions\unqlite\unqlite.h">
       <Filter>Classes\quick-src\lua_extensions\unqlite</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\quick-src\lua_extensions\protobuf\lpb.h">
-      <Filter>Classes\quick-src\lua_extensions\protobuf</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp">

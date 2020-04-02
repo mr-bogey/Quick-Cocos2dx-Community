@@ -176,7 +176,6 @@ xcopy /Y /Q "$(TargetPath)" "$(ProjectDir)..\win32\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\quick-src\lua_extensions\protobuf\lpb.h" />
     <ClInclude Include="..\..\lib\quick-src\lua_extensions\protobuf\pb.h" />
     <ClInclude Include="..\..\lib\quick-src\lua_extensions\unqlite\lunqlite.h" />
     <ClInclude Include="..\..\lib\quick-src\lua_extensions\unqlite\unqlite.h" />
